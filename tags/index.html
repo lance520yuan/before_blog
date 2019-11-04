@@ -10,7 +10,7 @@
     <link rel="icon" href="/favicon.ico">
   
     
-  <title>Archives | Lanceyuanの一方天地</title>
+  <title>Lanceyuanの一方天地</title>
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -38,13 +38,13 @@
       
         <li class="nav-item">
           
-            <a href="/archives" class="item-link active">归档</a>
+            <a href="/archives" class="item-link">归档</a>
           
         </li>
       
         <li class="nav-item">
           
-            <a href="/tags" class="item-link">标签</a>
+            <a href="/tags" class="item-link active">标签</a>
           
         </li>
       
@@ -52,26 +52,31 @@
   </div>
 </header>
 
-  <main id="archive">
-  <div class="content">
-        
-    
-      <div class="year-list">
-        <h3>2019</h3>
-        <ul>
-          
-            <li >
-              <time>2019/11/04</time>
-              <a href="/2019/11/04/hello/">
-                <span>
+  <main id='tags'>
+  <div class="tags-container">
+  <div id='tag_cloud' class="tags">
+      
+          <a href="#杂" title="杂" rel="1">杂</a>
+      
+  </div>
+  
+  <div class="tag-list">
+      <span class="fa fa-tag listing-seperator" id="杂">
+          <span class="tag-text">杂</span>
+      </span>
+      
+        <div class="post-preview">
+            <a href="/2019/11/04/hello/">
+                <h2 class="post-title">
                     Hello world
-                </span>
-              </a>
-            </li>
-          
-        </ul>
-      </div>
-        
+                </h2>
+                
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+        </div>
+      
+  </div>
+    
   </div>
 </main>
 
