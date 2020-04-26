@@ -14,11 +14,19 @@
 <script src='src/threex/threex-armarkercontrols.js'></script>
 <script src='src/threex/threex-arsmoothedcontrols.js'></script>
 <script>THREEx.ArToolkitContext.baseURL = ''</script>
+<!--three.js for dae -->
+
+
+
 
 <body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
 <div style='position: absolute; top: 10px; width:100%; text-align: center;z-index:1';>
 lizy
 </div>
+<script src="js/loaders/ColladaLoader.js"></script>
+<script src="js/controls/OrbitControls.js"></script>
+<script src="js/Detector.js"></script>
+<script src="js/libs/stats.min.js"></script>
 <script>
     //////////////////////////////////////////////////////////////////////////////////
     //		Init
@@ -164,35 +172,53 @@ lizy
     //		add an object in the scene
     //////////////////////////////////////////////////////////////////////////////////
 
-    // var arWorldRoot = markerRoot
+    // var arWorldRoot = markerRootexamples
     var arWorldRoot = smoothedRoot
 
     var mesh = new THREE.AxesHelper()
     // markerRoot.add(mesh)
     arWorldRoot.add(mesh)
 
-    // add a torus knot
-    var geometry	= new THREE.CubeGeometry(1,1,1);
-    var material	= new THREE.MeshNormalMaterial({
-        transparent : true,
-        opacity: 0.5,
-        side: THREE.DoubleSide
-    })
-    var mesh	= new THREE.Mesh( geometry, material );
-    mesh.position.y	= geometry.parameters.height/2
-    // markerRoot.add( mesh );
-    arWorldRoot.add(mesh)
+    var loader = new THREE.ColladaLoader();
+    loader.load( 'model/PikachuM_ColladaMax.DAE', function ( collada ) {
+        var animations = collada.animations;
 
-    var geometry	= new THREE.TorusKnotGeometry(0.3,0.1,64,16);
-    var material	= new THREE.MeshNormalMaterial();
-    var mesh	= new THREE.Mesh( geometry, material );
-    mesh.position.y	= 0.5
-    // markerRoot.add( mesh );
-    arWorldRoot.add( mesh );
+        //调整对象状态
+        var avatar = collada.scene;
+        avatar.rotation.x=Math.PI;
+        avatar.rotation.z=365;
+        avatar.scale.set(0.03,0.03,0.03);
+        mixer = new THREE.AnimationMixer( avatar );
 
-    onRenderFcts.push(function(delta){
-        mesh.rotation.x += delta * Math.PI
-    })
+        arWorldRoot.add( avatar );
+        var action = mixer.clipAction( animations[ 0 ] ).play();
+        onRenderFcts.push(function () {
+            avatar.rotation.x+=0.02*Math.PI;
+        })
+    } );
+
+    // // add a torus knot
+    // var geometry	= new THREE.CubeGeometry(1,1,1);
+    // var material	= new THREE.MeshNormalMaterial({
+    //     transparent : true,
+    //     opacity: 0.5,
+    //     side: THREE.DoubleSide
+    // })
+    // var mesh	= new THREE.Mesh( geometry, material );
+    // mesh.position.y	= geometry.parameters.height/2
+    // // markerRoot.add( mesh );
+    // arWorldRoot.add(mesh)
+    //
+    // var geometry	= new THREE.TorusKnotGeometry(0.3,0.1,64,16);
+    // var material	= new THREE.MeshNormalMaterial();
+    // var mesh	= new THREE.Mesh( geometry, material );
+    // mesh.position.y	= 0.5
+    // // markerRoot.add( mesh );
+    // arWorldRoot.add( mesh );
+    //
+    // onRenderFcts.push(function(delta){
+    //     mesh.rotation.x += delta * Math.PI
+    // })
 
     //////////////////////////////////////////////////////////////////////////////////
     //		render the whole thing on the page
