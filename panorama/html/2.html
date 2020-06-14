@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>three.js webgl - equirectangular panorama</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <script src="../js/adapter.js"></script> <!--rem适配js-->
+    <link type="text/css" rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/base.css"> <!--初始化文件-->
+    <link rel="stylesheet" href="../css/menu.css"> <!--主样式-->
+</head>
+<body>
+<div id="menu">
+    <!--隐藏菜单-->
+    <div id="ensconce">
+        <h2>
+            <img src="../images/show.png" alt="">
+            北京林业大学
+        </h2>
+    </div>
+
+    <!--显示菜单-->
+    <div id="open">
+        <div class="navH">
+            植物导览
+            <span><img class="obscure" src="../images/obscure.png" alt=""></span>
+        </div>
+        <div class="navBox">
+            <ul>
+                <li>
+                    <h2 class="obtain">
+                        <a href="1.html">
+                            正门
+                        </a>
+                        <i></i></h2>
+                    <div class="secondary">
+                        <h3>杜仲</h3>
+                    </div>
+                </li>
+                <li>
+                    <h2 class="obtain">
+                        <a href="2.html">主楼
+                        </a>
+                        <i></i></h2>
+                    <div class="secondary">
+                        <h3>球桧</h3>
+                        <h3>紫叶小檗</h3>
+                    </div>
+                </li>
+                <li>
+                    <h2 class="obtain">
+                        <a href="3.html">森工楼</a><i></i></h2>
+                    <div class="secondary">
+                        <h3>旱柳</h3>
+                        <h3>龙爪槐</h3>
+                    </div>
+                </li>
+                <li>
+                    <h2 class="obtain"><a href="4.html">学研</a><i></i></h2>
+                    <div class="secondary">
+                        <h3>白玉兰</h3>
+                        <h3>扶芳藤</h3>
+                        <h3>刚竹</h3>
+                        <h3>红皮云杉</h3>
+                        <h3>美桐</h3>
+                        <h3>银杏</h3>
+                    </div>
+                </li>
+                <li>
+                    <h2 class="obtain"><a href="5.html">二教</a><i></i></h2>
+                    <div class="secondary">
+                        <h3>凤尾兰</h3>
+                        <h3>扶芳藤</h3>
+                        <h3>金银木</h3>
+                        <h3>美桐</h3>
+                        <h3>油松</h3>
+                    </div>
+                </li>
+                <li>
+                    <h2 class="obtain"><a href="6.html">图书馆</a><i></i></h2>
+                    <div class="secondary">
+                        <h3>大叶黄杨</h3>
+                        <h3>畸叶槐</h3>
+                        <h3>圆柏</h3>
+                    </div>
+                </li>
+                <li>
+                    <h2 class="obtain"><a href="7.html">博物馆</a> <i></i></h2>
+                    <div class="secondary">
+                        <h3>西府海棠</h3>
+                        <h3>洋白蜡</h3>
+                    </div>
+                </li>
+                <li>
+                    <h2 class="obtain"><a href="8.html">理学院</a><i></i></h2>
+                    <div class="secondary">
+                        <h3>圆柏</h3>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="../js/menu.js"></script> <!--控制js-->
+<div style="position: absolute; right: 20px; bottom: 20px;">
+    <button type="button" class="el-button el-button--danger is-circle" onclick="palymusice()">
+        <img id="ui1" src="../UI/关闭声音.png" alt=""  width="50px">
+    </button>
+    <button type="button" class="el-button el-button--danger is-circle" onclick="fullScreen()">
+        <img id="ui2" src="../UI/全屏5.png" alt="" width="50px">
+    </button>
+    <button type="button" class="el-button el-button--danger is-circle" onclick="playground()">
+        <img id="ui3" src="../UI/旋转.png" alt="" width="50px">
+    </button>
+    <button type="button" class="el-button el-button--danger is-circle" onclick="out()"><!----><!---->
+        <img id="ui4" src="../UI/帮助5.png" alt="" width="50px">
+    </button>
+</div>
+<video src="../music/Forest.mp3" loop preload="auto" id="music" style="visibility: hidden; position: fixed"></video>
+<script>
+    var valting = true;
+    var number=true;
+    var music=document.getElementById("music");
+    function out(){
+        alert("知山知水，树木树人。\n愿北林人,都能永怀一颗为每一粒种子而热泪盈眶的心。" +
+            "\n合作联系：1479132259@qq.com（备注：全景图合作）\n注：全景图使用网展全景图，如有版权问题请联系删除");
+    }
+
+    function playground() {
+        if (valting){
+            valting = false;
+            document.getElementById("ui3").src="../UI/停止旋转.png";
+        }
+        else {
+            valting = true;
+            document.getElementById("ui3").src="../UI/旋转.png";
+        }
+    }
+    function palymusice(){
+        {
+            if(number===false){
+                number=true;
+                music.pause();
+                document.getElementById("ui1").src="../UI/关闭声音.png"
+            }else{
+                number=false;
+                music.play();
+                document.getElementById("ui1").src="../UI/打开声音.png"
+            }
+        };
+    }
+
+    function fullScreen(){
+        if(document.isFullScreen || document.mozIsFullScreen || document.webkitIsFullScreen){
+            var el = document;
+            var rfs = el.cancelFullScreen || el.webkitCancelFullScreen || el.mozCancelFullScreen || el.exitFullScreen;
+            document.getElementById("ui2").src="../UI/全屏5.png"
+        }
+        else {
+            var el = document.documentElement;
+            var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen;
+            document.getElementById("ui2").src="../UI/退出全屏.png"
+        }
+        if (rfs) {
+            rfs.call(el);
+        }
+        else if (typeof window.ActiveXObject !== "undefined") {
+            //for IE，这里其实就是模拟了按下键盘的F11，使浏览器全屏
+            var wscript = new ActiveXObject("WScript.Shell");
+            if (wscript != null) {
+                wscript.SendKeys("{F11}");
+            }
+        }
+    }
+
+</script>
+<div id="container"></div>
+<div class="annotation">
+    <img id="annotation" src="../images/杜仲.png">
+</div>
+<script type="module">
+
+    import * as THREE from '../jsm/three.module.js';
+    //加载`
+
+    var camera, scene, renderer;
+    var datadict = {}
+    var isUserInteracting = false,
+        onMouseDownMouseX = 0, onMouseDownMouseY = 0,
+        lon = 0, onMouseDownLon = 0,
+        lat = 0, onMouseDownLat = 0,
+        phi = 0, theta = 0;
+    var annotation = document.querySelector(".annotation");
+
+    var sprite = void 0;
+    var group;
+    init();
+    animate();
+
+    function init() {
+
+        var container, mesh;
+
+        container = document.getElementById( 'container' );
+
+        camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1100 );
+        camera.target = new THREE.Vector3( 0, 0, 0 );
+
+        scene = new THREE.Scene();
+
+        group = new THREE.Group();
+        scene.add( group );
+
+        var geometry = new THREE.SphereBufferGeometry( 500, 60, 40 );
+        // invert the geometry on the x-axis so that all of the faces point inward
+        geometry.scale( - 1, 1, 1 );
+
+        var texture = new THREE.TextureLoader().load( '../images/2.jpg' );
+        var material = new THREE.MeshBasicMaterial( { map: texture } );
+
+        mesh = new THREE.Mesh( geometry, material );
+        mesh.rotation.set(0,9.5,0)
+        scene.add( mesh );
+
+        var light = new THREE.PointLight('#ffffff', 1, 100, 0 );
+        light.position.set(0, 30, 20 );
+        light.castShadow = true;
+        scene.add( light );
+
+        // var loader = new TDSLoader( );
+        // loader.load( '../models/file.3ds', function ( object ) {
+        //     object.position.set(120, 0, 0)
+        //     // +前-后 +上-下 +左-右
+        //     object.rotation.set(0.5,0,0)
+        //     scene.add( object );
+        //
+        // } );太丑了
+
+
+        sphere(100,0,-110,"../images/"+"球桧"+".png");
+        sphere(-100,10,180,"../images/"+"紫叶小檗"+".png")
+
+
+
+
+        renderer = new THREE.WebGLRenderer({
+            antialias: true
+        });
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        container.appendChild( renderer.domElement );
+
+        document.addEventListener( 'mousedown', onPointerStart, false );
+        document.addEventListener( 'mousemove', onPointerMove, false );
+        document.addEventListener( 'mouseup', onPointerUp, false );
+
+        document.addEventListener( 'wheel', onDocumentMouseWheel, false );
+
+        document.addEventListener( 'touchstart', onPointerStart, false );
+        document.addEventListener( 'touchmove', onPointerMove, false );
+        document.addEventListener( 'touchend', onPointerUp, false );
+
+        //
+
+        document.addEventListener( 'dragover', function ( event ) {
+
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'copy';
+
+        }, false );
+
+        document.addEventListener( 'dragenter', function () {
+
+            document.body.style.opacity = 0.5;
+
+        }, false );
+
+        document.addEventListener( 'dragleave', function () {
+
+            document.body.style.opacity = 1;
+
+        }, false );
+
+        document.addEventListener( 'drop', function ( event ) {
+
+            event.preventDefault();
+
+            var reader = new FileReader();
+            reader.addEventListener( 'load', function ( event ) {
+
+                material.map.image.src = event.target.result;
+                material.map.needsUpdate = true;
+
+            }, false );
+            reader.readAsDataURL( event.dataTransfer.files[ 0 ] );
+
+            document.body.style.opacity = 1;
+
+        }, false );
+
+        //
+
+        window.addEventListener( 'resize', onWindowResize, false );
+
+    }
+
+    function sphere(x,y,z,path){
+
+        var loader = new THREE.TextureLoader();
+        loader.load("../images/texture.jpg",function (texture) {
+            var sphereGeo = new THREE.SphereGeometry(2, 40, 40);//创建球体
+            var sphereMat = new THREE.MeshLambertMaterial({//创建材料
+                color:0Xdbadda,
+                map:texture
+
+            });
+            var sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);//创建球体网格模型
+            sphereMesh.position.set(x, y, z);//设置球的坐标
+            scene.add(sphereMesh);//将球体添加到场景
+            datadict[sphereMesh.uuid] = path;
+            group.add(sphereMesh)
+        })
+
+
+    }
+
+    function onWindowResize() {
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+    }
+    var selectedObject1 = null;
+    function onPointerStart( event ) {
+
+        isUserInteracting = true;
+
+        var clientX = event.clientX || event.touches[ 0 ].clientX;
+        var clientY = event.clientY || event.touches[ 0 ].clientY;
+
+        onMouseDownMouseX = clientX;
+        onMouseDownMouseY = clientY;
+
+        onMouseDownLon = lon;
+        onMouseDownLat = lat;
+
+        if ( selectedObject1 ) {
+
+            selectedObject1.material.color.set( '#dbadda' );
+            annotation.style.visibility = "hidden";
+            selectedObject1 = null;
+
+        }
+        var intersects = getIntersects( event.layerX, event.layerY );
+        if ( intersects.length > 0 ) {
+
+            var res = intersects.filter( function ( res ) {
+
+                return res && res.object;
+
+            } )[ 0 ];
+
+            if ( res && res.object ) {
+
+                selectedObject1 = res.object;
+                changePhoto(selectedObject1.uuid);
+                selectedObject1.material.color.set( '#dbc261' );
+
+                annotation.style.visibility = "visible";
+            }
+
+        }
+    }
+    function changePhoto(uuid) {
+        document.getElementById("annotation").src = datadict[uuid]
+    }
+
+    var selectedObject = null;
+    function onPointerMove( event ) {
+
+        if ( isUserInteracting === true ) {
+
+            var clientX = event.clientX || event.touches[ 0 ].clientX;
+            var clientY = event.clientY || event.touches[ 0 ].clientY;
+
+            lon = ( onMouseDownMouseX - clientX ) * 0.1 + onMouseDownLon;
+            lat = ( clientY - onMouseDownMouseY ) * 0.1 + onMouseDownLat;
+
+        }
+
+        event.preventDefault();
+        if ( selectedObject ) {
+
+            selectedObject.material.color.set( '#dbadda' );
+            selectedObject = null;
+
+        }
+
+        var intersects = getIntersects( event.layerX, event.layerY );
+        if ( intersects.length > 0 ) {
+
+            var res = intersects.filter( function ( res ) {
+
+                return res && res.object;
+
+            } )[ 0 ];
+
+            if ( res && res.object ) {
+
+                selectedObject = res.object;
+                selectedObject.material.color.set( '#ea98a9' );
+
+            }
+
+        }
+
+
+    }
+
+    var raycaster = new THREE.Raycaster();
+    var mouseVector = new THREE.Vector3();
+
+    function getIntersects( x, y ) {
+
+        x = ( x / window.innerWidth ) * 2 - 1;
+        y = - ( y / window.innerHeight ) * 2 + 1;
+
+        mouseVector.set( x, y, 0.5 );
+        raycaster.setFromCamera( mouseVector, camera );
+
+        return raycaster.intersectObject( group, true );
+
+    }
+
+    function onPointerUp() {
+
+        isUserInteracting = false;
+
+    }
+
+    function onDocumentMouseWheel( event ) {
+
+        var fov = camera.fov + event.deltaY * 0.05;
+
+        camera.fov = THREE.MathUtils.clamp( fov, 10, 75 );
+
+        camera.updateProjectionMatrix();
+
+    }
+
+    function animate() {
+
+        requestAnimationFrame( animate );
+        update();
+
+    }
+
+
+    function update() {
+
+        if ( isUserInteracting === false && valting == true) {
+
+            lon += 0.1;
+
+        }
+
+        lat = Math.max( - 85, Math.min( 85, lat ) );
+        phi = THREE.MathUtils.degToRad( 90 - lat );
+        theta = THREE.MathUtils.degToRad( lon );
+
+        camera.target.x = 500 * Math.sin( phi ) * Math.cos( theta );
+        camera.target.y = 500 * Math.cos( phi );
+        camera.target.z = 500 * Math.sin( phi ) * Math.sin( theta );
+
+        camera.lookAt( camera.target );
+
+        renderer.render( scene, camera );
+    }
+
+</script>
+</body>
+</html>
