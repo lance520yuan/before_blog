@@ -43,7 +43,8 @@
 ## 论文核心阅读目的
 
 1. 这个云计算的本质是只使用远程的 `CPU` 使用
-```graphviz
+
+![Alt text](https://g.gravizo.com/svg?
 digraph finite_state_machine {
     rankdir=LR;
     size="8,5"
@@ -52,4 +53,4 @@ digraph finite_state_machine {
     node [shape = circle]; GPU;
     CPU -> GPU[label = "Transport_demand"];
 }
-```
+)
