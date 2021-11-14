@@ -197,7 +197,7 @@
 					- 坚持价值观，坚守道路正确性，不被西方经济学所影响
 					- 坚持资源配置和所有制形式
 					- 合理调整分配制度，实现共同富裕
-
+ç
 				</section>
 			</div>
 		</div>
@@ -212,10 +212,22 @@
 			// - https://revealjs.com/config/
 			Reveal.initialize({
 				hash: true,
+				multiplex: {
+					// Example values. To generate your own, see the socket.io server instructions.
+					secret: '1636897069445571309', // Obtained from the socket.io server. Gives this (the master) control of the presentation
+					id: '1432fff751de8d0b', // Obtained from socket.io server
+					url: 'https://reveal-multiplex.glitch.me/' // Location of socket.io server
+				},
 
+				// Don't forget to add the dependencies
+				dependencies: [
+					{ src: 'https://reveal-multiplex.glitch.me/socket.io/socket.io.js', async: true },
+					{ src: 'https://reveal-multiplex.glitch.me/master.js', async: true },
+				],
 				// Learn about plugins: https://revealjs.com/plugins/
 				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
 			});
+
 		</script>
 	</body>
 </html>
