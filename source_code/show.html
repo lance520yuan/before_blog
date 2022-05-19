@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../echarts.js"></script>
+    <script src="../../jquery.js"></script>
+    <script src="../../ecStat.js"></script>
+</head>
+<body>
+    <select name="status" id="tabs" class="selector", onchange="gradeChange()">
+        <!--<option>ALL</option>-->
+        <option id="tab1" value="1">表</option>
+        <option id="tab2" value="2">表</option>
+        <option id="tab3" value="3">表</option>
+        <option id="tab4" value="4">表</option>
+        <option id="tab5" value="5">表</option>
+        <option id="tab6" value="6">表</option>
+        <option id="tab7" value="7">表</option>
+        <option id="tab8" value="8">表</option>
+        <option id="tab9" value="9">表</option>
+        <option id="tab10" value="10">表</option>
+        <option id="tab11" value="11">表</option>
+        <option id="tab12" value="12">表</option>
+        <option id="tab13" value="13">表</option>
+        <option id="tab14" value="14">表</option>
+        <option id="tab15" value="15">表</option>
+        <option id="tab16" value="16">表</option>
+        <option id="tab17" value="17">表</option>
+        <option id="tab18" value="18">表</option>
+    </select>
+    <div id="3" style="width: 800px;height: 500px"></div>
+    <div id="1" style="width: 800px;height: 500px"></div>
+    <div id="2" style="width: 800px;height: 500px;position: absolute; top: 10px; left: 725px;"></div>
+    <script type="text/javascript">
+
+        var nameList_json = [
+            "和平精英-time.json",
+            "王者荣耀-time.json",
+            "None.json",
+            "AR穿越看真树-time.json",
+            "VeeR-time.json",
+            "None.json",
+            "口袋AR-time.json",
+            "天翼云VR-time.json",
+            "None.json",
+            "None.json",
+            "None.json",
+            "None.json",
+            "爱奇艺VR-time.json",
+            "神奇AR-time.json",
+            "None.json",
+            "金铲铲之战-time.json",
+            "摩尔庄园-time.json",
+            "开心消消乐-time.json"
+        ];
+        var nameList_csv = [
+            '和平精英-wireshark.csv',
+            "王者荣耀-wireshark.csv",
+            "Speedtest5g-wireshark.csv",
+            "AR穿越看真树-wireshark.csv",
+            "VeeR-wireshark.csv",
+            "公众号-wireshark.csv",
+            "口袋AR-wireshark.csv",
+            "天翼云VR-wireshark.csv",
+            "微信电话-wireshark.csv",
+            "微信群聊-wireshark.csv",
+            "微信聊天-wireshark.csv",
+            "泰尔测速-wireshark.csv",
+            "爱奇艺VR-wireshark.csv",
+            "神奇AR-wireshark.csv",
+            "网速管家-wireshark.csv",
+            "金铲铲.csv",
+            "摩尔庄园.csv",
+            "开心消消乐.csv"
+
+        ];
+        var nameList = [
+            "和平精英",
+            "王者荣耀",
+            "Speedtest",
+            "AR看树",
+            "VeeR",
+            "公众号",
+            "口袋AR",
+            "天翼云VR",
+            "微信电话",
+            "微信群聊",
+            "微信聊天",
+            "泰尔测速",
+            "爱奇艺VR",
+            "神奇AR",
+            "网速管家",
+            "金铲铲",
+            "摩尔庄园",
+            "开心消消乐"
+        ];
+
+        // 设置可选表名称
+        for (i = 1; i <= nameList.length; i++) {
+            document.getElementById('tab'+i).innerText = nameList[i-1]
+        }
+        var myChart1 = echarts.init(document.getElementById("1"));
+        var myChart2 = echarts.init(document.getElementById("2"));
+        var myChart3 = echarts.init(document.getElementById("3"));
+        function gradeChange(){
+            var objS = document.getElementById("tabs");
+            var name = objS.options[objS.selectedIndex].value;
+            var number = Number(name)
+
+            var myDataset = [];
+            var dataTCP = [];
+            var dataUDP = [];
+            var json_data =  $.parseJSON($.ajax({
+                url: nameList_json[number-1],//json文件位置，文件名
+                dataType: "json", //返回数据格式为json
+                async: false
+            }).responseText);
+            $.get(nameList_csv[number-1],function(data){
+                // 数据预处理阶段
+                var dataTest = data.split('\r\n');
+                for (let i = 0; i < dataTest.length; i++) {
+                    myDataset[i] = dataTest[i].split(',');
+                }
+                var j = 0;
+                for (let i = 0; i < myDataset.length; i++) {
+                    if(myDataset[i][1] === "TCP"){
+                        dataTCP[j] = [myDataset[i][0],myDataset[i][2]];
+                        j += 1;
+                    }
+                }
+                j = 0;
+                for (let i = 0; i < myDataset.length; i++) {
+                    if(myDataset[i][1] === "UDP"){
+                        dataUDP[j] = [myDataset[i][0],myDataset[i][2]];
+                        j += 1;
+                    }
+                }
+                // 设置TCP配置文件
+                var option1 = {
+                    dataset:[
+                        {
+                            source:dataTCP
+                        },
+                    ],
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross'
+                        }
+                    },
+                    dataZoom: [
+                        {
+                            type: 'inside',
+                            start: 0,
+                            end: 10
+                        },
+                        {
+                            start: 0,
+                            end: 10
+                        }
+                    ],
+                    label: {
+
+                    },
+                    xAxis: {},
+                    yAxis: {},
+
+
+                    series: [
+                        {
+                            name: 'TCP',
+                            type: 'line',
+                            smooth: true,
+                            symbolSize:2,
+                            datasetIndex: 0,
+                            markArea: {
+                                itemStyle: {
+                                    color: 'rgba(255, 173, 177, 0.4)'
+                                },
+                                data: json_data
+                            },
+                        },
+
+                    ]
+                }
+
+                // 设置UDP配置文件
+                var option2 = {
+                    dataset:[
+                        {
+                            source:dataUDP
+                        },
+                    ],
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross'
+                        },
+
+                    },
+                    toolbox: {
+                        feature: {
+                            dataZoom: {
+                                yAxisIndex: 'none'
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    dataZoom: [
+                        {
+                            type: 'inside',
+                            start: 0,
+                            end: 10
+                        },
+                        {
+                            start: 0,
+                            end: 10
+                        }
+                    ],
+                    xAxis: {},
+                    yAxis: {},
+
+
+                    series: [
+                        {
+                            name: 'UDP',
+                            type: 'line',
+                            smooth: true,
+                            symbolSize:2,
+                            datasetIndex: 0,
+                            markArea: {
+                                itemStyle: {
+                                    color: 'rgba(255, 173, 177, 0.4)'
+                                },
+                                data: json_data
+                            },
+                        },
+                    ]
+                }
+                // 设置混合流配置文件
+                var option3 = {
+                    dataset:[
+                        {
+                            source:dataUDP,
+                        },
+                        {
+                            source: dataTCP
+                        }
+
+                    ],
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross'
+                        },
+
+                    },
+                    toolbox: {
+                        feature: {
+                            dataZoom: {
+                                yAxisIndex: 'none'
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    dataZoom: [
+                        {
+                            type: 'inside',
+                            start: 0,
+                            end: 10
+                        },
+                        {
+                            start: 0,
+                            end: 10
+                        }
+                    ],
+                    xAxis: {},
+                    yAxis: {},
+
+
+                    series: [
+                        {
+                            name: 'UDP',
+                            type: 'line',
+                            smooth: true,
+                            symbolSize:2,
+                            datasetIndex: 0,
+                            markArea: {
+                                itemStyle: {
+                                    color: 'rgba(255, 173, 177, 0.4)'
+                                },
+                                data: json_data
+                            },
+                        },
+                        {
+                            name: 'TCP',
+                            type: 'line',
+                            smooth: true,
+                            symbolSize:2,
+                            datasetIndex: 1,
+                            markArea: {
+                                itemStyle: {
+                                    color: 'rgba(255, 173, 177, 0.4)'
+                                },
+                                data: json_data
+                            },
+                        },
+                    ]
+                }
+                myChart1.setOption(option1);
+                myChart2.setOption(option2);
+                myChart3.setOption(option3)
+            });
+        }
+
+
+    </script>
+</body>
+</html>
